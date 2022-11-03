@@ -1,7 +1,5 @@
 # 面试题目 第三部分 Linux操作系统
 
-GitHub : <a href="https://github.com/ProgramCZ">ProgramCZ</a> | WeChat OA : ProgramCZ
-
 ## 快速索引
 
 | 第一节                               | 第二节                           | 第三节                    | 第四节                                 |
@@ -1438,6 +1436,123 @@ dmtsai lines: 3 columns: 10
 dmtsai lines: 4 columns: 10
 dmtsai lines: 5 columns: 9
 ```
+
+### sed
+
+Linux sed 命令是利用脚本来处理文本文件。
+sed 可依照脚本的指令来处理、编辑文本文件。
+Sed 主要用来自动编辑一个或多个文件、简化对文件的反复操作、编写转换程序等。
+
+**语法**
+
+```
+sed [-hnV][-e<script>][-f<script文件>][文本文件]
+
+```
+
+**参数说明**
+
+- `-e<script>` 或 `--expression=<script>` 以选项中指定的script来处理输入的文本文件。
+- `-f<script>` 或 `--file=<script>` 以选择中指定的script文件来处理输入的文本文件。
+- `-h` 或 `--help` 显示帮助。
+- `-n` 或 `--quiet` 或 `--silent` 仅显示 script 处理后的结果。
+- `-V` 或 `--version` 显示版本信息。
+
+**动作说明**
+
+- `a` ：新增， `a` 的后面可以接字串，而这些字串会在新的一行出现(目前的下一行)～
+- `c` ：取代， `c` 的后面可以接字串，这些字串可以取代 n1,n2 之间的行！
+- `d` ：删除，因为是删除啊，所以 `d` 后面通常不接任何东东；
+- `i` ：插入， `i` 的后面可以接字串，而这些字串会在新的一行出现(目前的上一行)；
+- `p` ：打印，亦即将某个选择的数据印出。通常 `p` 会与参数 `sed -n` 一起运行～
+- `s` ：取代，可以直接进行取代的工作哩！通常这个 `s` 的动作可以搭配正则表达式！例如 `1,20s/old/new/g` 就是啦!
+
+**实例**
+
+#### 追加/插入内容
+```
+# 第四行后添加一行
+sed -e 4a\newLine testfile
+
+# 在第二行后（加在第三行）加上 **drink tea?**字样
+nl testfile | sed '2a drink tea'
+
+# 将**drink tea**加在第二行前
+nl testfile | ted '2i drink tea'
+
+# 增加两行以上文字，在第二行后面加入两行字，例如**Drink tea or... 与 drink beer?**
+nl testfile | sed '2a Drink tea or ...\
+drink beer?'
+```
+
+#### 删除内容
+```
+# 列出内容及行号并删除2~5行
+nl testfile | sed '2,5d'
+
+# 只删除第二行
+nl testfile | sed '2d'
+
+# 删除第3到最后一行
+nl testfile | sed '3,$d'
+```
+
+#### 搜索/替换内容
+```
+# 将2-5行内容替换为**No 2-5 number**
+nl testfile | sed '2,5c No 2-5 number'
+```
+
+#### 仅打印内容
+```
+# 仅列出testfile文件内的第5-7行
+nl testfile | sed -n '5,7p'
+```
+
+#### 其它实例
+```
+# 搜索testfile中含有**oo**关键字的行并输出
+nl testfile | sed -n '/oo/p'
+
+# 删除testfile所有包含**oo**的行，输出其他行
+nl testfile | sed -n '/oo/d'
+
+# 搜索testfile，找到**oo**对应的行执行后面花括号中的一组命令，每组命令用分号分割
+# 例如吧**oo**替换成**kk**再输出此行，然后退出
+nl testfile | sed -n '/oo/{s/oo/kk/;p;q}
+
+# 将testfile文件中**每行第一次**出现的oo用字符串kk替换，然后输出文件内容
+sed -e 's/oo/kk/' testfile
+
+# `g`全局查找替换，替换所有符合条件字符串，修改后内容输出，不修改原文件
+sed -e 's/oo/kk/g' testfile
+
+# `i`使sed修改文件
+sed -i 's/oo/kk/g' testfile
+
+# 批量操作当前目录下以test开头的文件
+sed -i 's/oo/kk/g' ./test*
+
+# 字符串对应内容为 `inet addr:192.168.1.100 Bcast:192.168.1.255 Mask:255.255.255.0`
+# 删除ip前面部分和后面部分
+/sbin/ifconfig eth0 | grep 'inet addr' | sed 's/^.*addr://g' | sed 's/Bcast.*$//g'
+```
+
+#### 多点编辑
+```
+# 一条sed命令删除testfile第散列到末尾的数据，并把HELLO替换为MARK
+nl testfile | sed -e '3,$d' -e 's/HELLO/MARK/'
+```
+
+#### 直接修改文件内容（<strong><font color='red'>危险！危险！危险！</font></strong>）
+```
+# 利用sed将testfile每一行结尾若为 "." 替换为 "!"
+sed -i 's/\.$/\!/g' testfile
+
+# 利用sed直接在testfile最后一行加入 "# This is a test"
+sed -i '$a # This is a test' testfile
+```
+
 
 ## 十、进程管理
 
