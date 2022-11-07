@@ -21,7 +21,7 @@ RNN在处理时序数据时十分成功。但是，对RNN及其变种LSTM和GRU�
 
 近些年，深度学习模型在处理有非常复杂内部结构的数据时十分有效。例如，图像数据的像素之间的2维空间关系非常重要，CNN（convolution neural networks，卷积神经网络）处理这种空间关系十分有效。而时序数据（sequential data）的变长输入序列之间时序关系非常重要，RNN（recur**rent** neural networks，循环神经网络，注意和recur**sive** neural networks，递归神经网络的区别）处理这种时序关系十分有效。
 
-我们使用下标 $t$ 表示输入时序序列的不同位置，用 $\boldsymbol{h}_t$ 表示在时刻  的系统隐层状态向量，用 $\boldsymbol{x}_t$ 表示时刻 $t$ 的输入。$t$ 时刻的隐层状态向量 $\boldsymbol{h}_t$ 依赖于当前词 $\boldsymbol{x}_t$ 和前一时刻的隐层状态向量 $\boldsymbol{h}_{t-1}$ ：
+我们使用下标 $t$ 表示输入时序序列的不同位置，用 $\boldsymbol{h}_t$ 表示在时刻 $t$ 的系统隐层状态向量，用 $\boldsymbol{x}_t$ 表示时刻 $t$ 的输入。$t$ 时刻的隐层状态向量 $\boldsymbol{h}_t$ 依赖于当前词 $\boldsymbol{x}_t$ 和前一时刻的隐层状态向量 $\boldsymbol{h}_{t-1}$ ：
 
 $$\boldsymbol{h}_t:=\boldsymbol{f}(\boldsymbol{x}_t,\boldsymbol{h}_{t-1}),$$
 
