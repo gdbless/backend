@@ -7,10 +7,170 @@
 
 语法解析树
 
+<div align=center>
 <img src="https://img-blog.csdn.net/20180905135454417?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3N4bHN4bDExOQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+</div>
 
 -------
+# 神经网络一般过程：
+来源：<a href="https://victorzhou.com/blog/keras-neural-network-tutorial/#2-preparing-the-data">Victor Zhou</a>
 
+1. 准备数据集合
+
+    - 数据前处理
+
+2. 分割数据集
+    - 准备训练数据
+    - 准备测试数据
+
+3. 构建模型
+    - 神经网络构建
+
+4. 编译模型
+
+    - 优化器
+    - 损失函数
+    - 准确率指标
+
+5. 训练模型
+    - training data（图片和标签）
+    - Epochs numbers
+    - batch size
+
+6. 测试模型
+
+7. 使用模型
+    - 构建模型
+    - 载入训练模型
+
+8. 预测结果
+
+--------
+
+# 神经网络需要多少隐藏层、每层需要多少神经元？
+
+来源：<a href="https://zhuanlan.zhihu.com/p/47519999">论智</a>
+
+该使用多少层隐藏层？使用隐藏层的目的是什么？增加隐藏层/神经元的数目总能给出更好的结果吗？人工神经网络（ANN）初学者常常提出这些问题。如果需要解决的问题很复杂，这些问题的答案可能也会比较复杂。希望读完这篇文章后，你至少可以知道如何回答这些问题。
+
+<div align=center>
+<img src="https://pic1.zhimg.com/v2-0dcdbc8f42e787634dcf812a5e9df0d8_r.jpg">
+</div>
+
+## 介绍
+在计算机科学中，借鉴了生物神经网络的ANN用一组网络层表示。这些网络层可以分为三类：输入层、隐藏层、输出层。
+
+输入层和输出层的层数、大小是最容易确定的。每个网络都有一个输入层，一个输出层。输入层的神经元数目等于将要处理的数据的变量数。输出层的神经元数目等于每个输入对应的输出数。不过，确定隐藏层的层数和大小却是一项挑战。
+
+下面是在分类问题中确定隐藏层的层数，以及每个隐藏层的神经元数目的一些原则：
+
+- 在数据上画出分隔分类的期望边界。
+- 将期望边界表示为一组线段。
+- 线段数等于第一个隐藏层的隐藏层神经元数。
+- 将其中部分线段连接起来（每次选择哪些线段连接取决于设计者），并增加一个新隐藏层。也就是说，每连接一些线段，就新增一个隐藏层。
+- 每次连接的连接数等于新增隐藏层的神经元数目。
+下面我们将举例说明这一确定隐藏层层数、大小的简单方法。
+
+
+## 例一
+
+让我们先来看一个简单的分类问题。每个样本有两个输入和一个表示分类标签的输出，和XOR问题很像。
+
+
+<div align=center>
+<img src="https://pic3.zhimg.com/80/v2-0294b1c7bd73358e569ac04c6d4fbbb2_720w.webp">
+</div>
+
+首先需要回答的问题，是否需要隐藏层。关于这个问题，有一条一般规则：
+
+>在神经网络中，当且仅当数据必须以非线性的方式分割时，才需要隐藏层。
+
+回到我们的例子。看起来一条直线搞不定，因此，我们需要使用隐藏层。在这样的情形下，也许我们仍然可以不用隐藏层，但会影响到分类精确度。所以，最好使用隐藏层。
+
+已知需要隐藏层，那么接下来就需要回答两个重要问题：
+
+1. 需要多少层？
+2. 每层需要多少神经元？
+
+按照我们之前提到的流程，首先需要画出分割的边界。如下图所示，可能的边界不止一种。我们在之后的讨论中将以下图右部的方案为例。
+
+
+<div align=center>
+<img src="https://pic4.zhimg.com/80/v2-b228da8bf64044380fc9a592d8f07b1f_720w.webp">
+</div>
+
+根据之前的原则，接下来是使用一组线段表示这一边界。
+
+使用一组线段表示边界的想法来自于神经网络的基础构件——单层感知器。单层感知器是一个线性分类器，根据下式创建分界线：
+
+$$y=w_1x_1+w_2x_2+\dots+w_ix_i+b$$
+
+其中 $x_i$ 为第 $i$ 项输入，$w_i$ 是权重，$b$ 是偏置，$y$ 是输出。因为每增加一个隐藏单元都会增加权重数，所以一般建议使用能够完成任务的最少数量的隐藏单元。隐藏神经元使用量超出需要会增加复杂度。
+
+回到我们的例子上来，人工神经网络基于多个感知器构建，这就相当于网络由多条直线组成。
+
+因此我们使用一组线段替换边界，以分界曲线变向处作为线段的起点，在这一点上放置方向不同的两条线段。
+
+如下图所示，我们只需要两条线段（分界曲线变向处以空心圆圈表示）。也就是两个单层感知器网络，每个感知器产生一条线段。
+
+只需两条线段就可以表示边界，因此第一个隐藏层将有两个隐藏神经元。
+
+到目前为止，我们有包含两个隐藏神经元的单隐藏层。每个隐藏神经元可以看成由一条线段表示的一个线性分类器。每个分类器（即隐藏神经元）都有一个输出，总共有两个输出。但我们将要创建的是基于单个输出表示分类标签的一个分类器，因此，两个隐藏神经元的输出将被合并为单个输出。换句话说，这两条线段将由另一个神经元连接起来，如下图所示。
+
+<div align=center>
+<img src="https://pic1.zhimg.com/80/v2-d2abe7cfce8f048f806350d0e8285190_720w.webp">
+</div>
+
+
+很幸运，我们并不需要额外添加一个包含单个神经元的隐藏层。输出层的神经元正好可以起到这个作用，合并之前提到的两个输出（连接两条线段），这样整个网络就只有一个输出。
+
+整个网络架构如下图所示：
+
+<div align=center>
+<img src="https://pic2.zhimg.com/80/v2-13bb78dbb6d0aca60a06ce9ebb32da8d_720w.webp">
+</div>
+
+
+## 例二
+
+我们再来看一个分类问题的例子。和上面一个例子相似，这个例子也有两个分类，每个样本对应两个输入和一个输出。区别在于边界比之前的更复杂。
+
+<div align=center>
+<img src="https://pic1.zhimg.com/80/v2-36181cf3c68787d69cb5b71f79dd6100_720w.webp">
+</div>
+
+遵照之前的原则，第一步是画出边界（如下图左半部分所示），接着是将边界分成一组线段，我们将使用 **ANN** 的感知器建模每条线段。在画出线段之前，首先标出边界的变向处（下图右半部分中的空心圆圈）。
+
+<div align=center>
+<img src="https://pic4.zhimg.com/80/v2-5a697fbb0eb03b980f89de0d6d7220db_720w.webp">
+</div>
+
+
+问题在于需要几条线段？顶部和底部的变向处各需要两条线段，这样总共是4条线段。而当中的变向处可以和上下两个变向处共用线段。所以我们需要4条线段，如下图所示。
+
+<div align=center>
+<img src="https://pic2.zhimg.com/80/v2-8c1d778227debd70a201a389e1579235_720w.webp">
+</div>
+
+这意味着第一个隐藏层将包含4个神经元。换句话说，由单层感知器构成的4个分类器，每个分类器各生成一个输出，共计4个输出。接下来需要将这些分类器连接起来，使得整个网络生成单个输出。换句话说，通过另外的隐藏层将这些线段连接起来，以得到单条曲线。
+
+网络的具体布局取决于模型设计者。一种可能的网络架构是创建包含两个隐藏神经元的第二隐藏层。其中第一个隐藏神经元连接前两条线段，最后一个隐藏神经元连接后两条线段，如下
+
+<div align=center>
+<img src="https://pic4.zhimg.com/80/v2-bfcd09545c2808d5dce069bd9e71e1eb_720w.webp">
+</div>
+
+到目前为止，我们有两条曲线，也就是两个输出。接下来我们连接这两条曲线，以得到整个网络的单个输出。在这一情形下，输出层的神经元可以完成最终的连接，而无需增加一个新的隐藏层。最后我们得到了如下曲线：
+
+<div align=center>
+<img src="https://pic2.zhimg.com/80/v2-dd2bcb85cba9b7d260a016983914999d_720w.webp">
+</div>
+
+这就完成了网络的设计，整个网络架构如下图所示：
+
+
+
+--------
 # 三次简化一张图：一招理解LSTM/GRU门控机制
 来源：张皓 <a href="https://zhuanlan.zhihu.com/p/28297161?utm_id=0">https://zhuanlan.zhihu.com/p/28297161?utm_id=0</a>
 
@@ -33,7 +193,9 @@ $$\boldsymbol{h}_t := tanh(\boldsymbol{W}_{xh}\boldsymbol{x}_t + \boldsymbol{W}_
 
 为了对 RNN 的计算过程做一个可视化，我们可以画出下图：
 
-![Alt text](https://pic3.zhimg.com/80/v2-d1bb081b599d160e3cde8a0d3cdd062e_720w.webp)
+<div align=center>
+<img src="https://pic3.zhimg.com/80/v2-d1bb081b599d160e3cde8a0d3cdd062e_720w.webp">
+</div>
 
 图中左边是输入 $\boldsymbol{x}_t$ 和 $\boldsymbol{h}_{t-1}$、右边是输出 $\boldsymbol{h}_t$ 。计算从左向右进行，整个运算包括三步：输入 $\boldsymbol{x}_t$ 和 $\boldsymbol{h}_t$ 分别乘以 $\boldsymbol{W}_{xh}$ 和 $\boldsymbol{W}_{hh}$ 、相加、经过 tanh 非线性变换。
 
@@ -82,7 +244,9 @@ $$\frac{\partial{\ell}}{\partial{\boldsymbol{h}_0}}
 
 当 $t$ 很大时，该偏导数取决于矩阵 $\boldsymbol{W}_{hh}$ 对应的对角矩阵的最大值 $\lambda_1$ 是大于1还是小于1，要么结果太大，要么结果太小：
 
-![Alt text](https://pic1.zhimg.com/80/v2-db6bc7b10f19b540c3f1be154a22ec68_720w.webp)
+<div align=center>
+<img src="https://pic1.zhimg.com/80/v2-db6bc7b10f19b540c3f1be154a22ec68_720w.webp">
+</div>
 
 (1). 梯度爆炸。当$\lambda_1\gt1,\ \lim_{t\rightarrow\infty}{\lambda_1^t}=\infty$，那么
 
@@ -93,7 +257,9 @@ $$\frac{\partial{\ell}}{\partial{\boldsymbol{h}_0}}
 
 梯度爆炸相对比较好处理，可以用梯度裁剪（gradient clipping）来解决：
 
-![Alt text](https://pic4.zhimg.com/80/v2-2efd0ea742d55466256a581bc490927b_720w.webp)
+<div align=center>
+<img src="https://pic4.zhimg.com/80/v2-2efd0ea742d55466256a581bc490927b_720w.webp">
+</div>
 
 这好比是不管前面的关税怎么加，设置一个最高市场价格，通过这个最高市场价格保证老百姓是买的起的。在 RNN 中，不管梯度回传的时候大到什么程度，设置一个梯度的阈值，梯度最多是这么大。
 
@@ -143,7 +309,9 @@ $$sigma(z):=\frac{1}{1+exp(-z)}.$$
 
 这个公式看起来似乎十分复杂，为了更好的理解 LSTM 的机制，许多人用图来描述 LSTM 的计算过程。比如下面这张图：
 
-![Alt text](https://pic1.zhimg.com/80/v2-6a97bbf66211569a33c38c8e255ed6c8_720w.webp)
+<div align=center>
+<img src="https://pic1.zhimg.com/80/v2-6a97bbf66211569a33c38c8e255ed6c8_720w.webp">
+</div>
 
 似乎看完之后，对 LSTM 的理解仍然是一头雾水？这是因为这些图想把 LSTM 的所有细节一次性都展示出来，但是突然暴露这么多的细节会使你眼花缭乱，从而无处下手。
 
@@ -180,7 +348,9 @@ $$
 
 **(3). 第三次简化：各门控单元二值输出**。门控单元 $i_t$ 、$f_t$ 、$o_t$ 的由于经过了sigmoid 激活函数，输出是范围是[0, 1]。激活函数使用sigmoid 的目的是为了近似 0/1 阶跃函数，这样 sigmoid 实数值输出单调可微，可以基于误差反向传播进行更新。
 
-![Alt text](https://pic4.zhimg.com/80/v2-49a9018881b992fb140b99285069698b_720w.webp)
+<div align=center>
+<img src="https://pic4.zhimg.com/80/v2-49a9018881b992fb140b99285069698b_720w.webp">
+</div>
 
 既然 sigmoid 激活函数是为了近似 0/1 阶跃函数，那么，在进行 LSTM 理解分析的时候，为了理解方便，我们认为各门控单元 {0, 1} 二值输出，即门控单元扮演了电路中开关的角色，用于控制信息的通断。
 
@@ -199,7 +369,9 @@ $$
 
 最终结果如下：
 
-![Alt text](https://pic4.zhimg.com/80/v2-7f74a75ca3b252bac92f0e7a77446fff_720w.webp)
+<div align=center>
+<img src="https://pic4.zhimg.com/80/v2-7f74a75ca3b252bac92f0e7a77446fff_720w.webp">
+</div>
 
 和 RNN 相同的是，网络接受两个输入，得到一个输出。其中使用了两个参数矩阵 $\boldsymbol{W}_{xc}$ 和 $\boldsymbol{W}_{hc}$ ，以及tanh激活函数。不同之处在于，LSTM 中通过 3 个门控单元 $i_t$ 、$f_t$ 、$o_t$ 来对的信息交互进行控制。当 $i=1$ （开关闭合）、$f=0$ （开关打开）、$o_t=1$ （开关闭合）时，LSTM退化为标准的 RNN。
 
@@ -254,7 +426,9 @@ $$
 
 **(4). 一张图**。将三次简化的结果用电路图表述出来，左边是输入，右边是输出。
 
-![Alt text](https://pic1.zhimg.com/80/v2-5faedb3b0e8e9785d8d25e5cd2aade00_720w.webp)
+<div align=center>
+<img src="https://pic1.zhimg.com/80/v2-5faedb3b0e8e9785d8d25e5cd2aade00_720w.webp">
+</div>
 
 与 LSTM 相比，GRU 将输入门 $i_t$ 和遗忘门 $f_t$ 融合成单一的更新门 $z_t$ ，并且融合了细胞状态 $\boldsymbol{c}_t$ 和隐层单元 $\boldsymbol{h}_t$ 。当 $r_t=1$ （开关闭合）、 $z_t=0$ （开关连通上面）GRU 退化为标准的 RNN。
 
